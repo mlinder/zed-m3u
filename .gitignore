@@ -1,0 +1,8 @@
+# Zed build output: grammar checkouts and compiled WebAssembly
+grammars/
+*.wasm
+
+# Local reference material (spec PDFs); not for publishing
+ref/
+
+.DS_Store

@@ -1,0 +1,14 @@
+id = "m3u"
+name = "M3U"
+version = "1.0.0"
+schema_version = 1
+authors = ["Marcus Linder <mlinder@gmail.com>"]
+description = "M3U and M3U8 playlist support, including Extended M3U, IPTV and HLS"
+repository = "https://github.com/mlinder/zed-m3u"
+
+languages = ["languages/m3u"]
+snippets = ["snippets/m3u.json"]
+
+[grammars.m3u]
+repository = "https://github.com/mlinder/tree-sitter-m3u"
+rev = "2fd738b2124027ddc7cbfbdf1caafd410be63364"

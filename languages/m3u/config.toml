@@ -1,0 +1,25 @@
+name = "M3U"
+grammar = "m3u"
+path_suffixes = ["m3u", "m3u8"]
+# Also recognize playlists saved without an extension, e.g. curl output
+first_line_pattern = '^#EXTM3U'
+line_comments = ["# "]
+
+# Double-clicking selects whole attribute names (group-title), filenames
+# (index.m3u8) and path segments instead of stopping at every '-', '.'
+# and '/'. '=' and ':' are deliberately excluded so attribute names and
+# values remain separately selectable.
+word_characters = ["-", ".", "/"]
+
+brackets = [
+  { start = "\"", end = "\"", close = true, newline = false, not_in = ["string", "comment"] },
+  { start = "{", end = "}", close = true, newline = false },
+]
+
+# See overrides.scm: directives and quoted values start lines with '#' too,
+# so newline comment continuation must not apply there.
+[overrides.directive]
+line_comments = { remove = true }
+
+[overrides.string]
+line_comments = { remove = true }

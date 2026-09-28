@@ -3,6 +3,7 @@ grammar = "m3u"
 path_suffixes = ["m3u", "m3u8"]
 # Also recognize playlists saved without an extension, e.g. curl output
 first_line_pattern = '^#EXTM3U'
+
 line_comments = ["# "]
 
 # Double-clicking selects whole attribute names (group-title), filenames
@@ -16,10 +17,14 @@ brackets = [
   { start = "{", end = "}", close = true, newline = false },
 ]
 
-# See overrides.scm: directives and quoted values start lines with '#' too,
-# so newline comment continuation must not apply there.
+# Zed treats any line starting with `#` as commented, directives included,
+# so cmd-/ would delete a directive's `#` and Enter would continue it as a
+# comment. See overrides.scm. On directives, cmd-/ falls back to a block
+# comment instead; with an empty end it is never seen as already commented,
+# so it always adds `# `. The result is a comment, which cmd-/ removes.
 [overrides.directive]
 line_comments = { remove = true }
+block_comment = ["# ", ""]
 
 [overrides.string]
 line_comments = { remove = true }

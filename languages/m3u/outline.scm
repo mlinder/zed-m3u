@@ -12,22 +12,18 @@
 
 ; --- Multivariant playlists ---
 
-; Variant stream (#EXT-X-STREAM-INF and its URI line):
-; "BANDWIDTH=6100000 dv/index.m3u8", with children that tell SDR, HDR10,
-; HLG and Dolby Vision variants apart, and the rendition groups the
-; variant uses.
+; Variant stream (#EXT-X-STREAM-INF and its URI line): "BANDWIDTH=6100000",
+; with children that tell SDR, HDR10, HLG and Dolby Vision variants apart,
+; the rendition groups it uses, and its URI.
+;
+; The URI is a child rather than part of the label because Zed's outline
+; panel only highlights a parent when all its children start after the
+; cursor. With the attribute children on the line above, a cursor on the
+; URI line needs an entry of its own.
 ((variant_stream
    (tag
      (tag_content
-       (attribute name: (tag_word) @_name) @context))
-   uri: (uri) @name) @item
- (#eq? @_name "BANDWIDTH"))
-
-((variant_stream
-   (tag
-     (tag_content
-       (attribute name: (tag_word) @_name) @name))
-   !uri) @item
+       (attribute name: (tag_word) @_name) @name))) @item
  (#eq? @_name "BANDWIDTH"))
 
 ((variant_stream
@@ -37,6 +33,9 @@
  (#any-of? @_name
    "CODECS" "SUPPLEMENTAL-CODECS" "RESOLUTION" "VIDEO-RANGE"
    "AUDIO" "SUBTITLES"))
+
+(variant_stream
+  uri: (uri) @name @item)
 
 ; I-frame stream, which carries its URI as an attribute:
 ; "#EXT-X-I-FRAME-STREAM-INF URI="iframe.m3u8"", with the same children

@@ -27,16 +27,17 @@
 - **Extended M3U dialects**: `#EXTINF` titles, `#PLAYLIST`, `#EXTGRP`, M3A,
   VLC options and IPTV `tvg-*` attributes
 - **Outline** (`cmd-shift-o` and the outline panel): variant streams by
-  bandwidth and URI, with their codecs, supplemental codecs, resolution,
-  video range and rendition groups nested below, so SDR, HDR10, HLG and
+  bandwidth, with their codecs, supplemental codecs, resolution, video range,
+  rendition groups and URI nested below, so SDR, HDR10, HLG and
   Dolby Vision ladders are easy to tell apart; renditions by type, with
   group and name; I-frame streams; date ranges with class, dates and
   duration; `#EXTINF` titles, segments, plain entries and IPTV groups
 - **Snippets** for `#EXTM3U`, `#EXTINF` and 22 HLS tags. HLS snippets are
   named `x-` plus the tag name, lowercased: `x-stream-inf`, `x-media`,
   `x-key`, `x-daterange`, `x-part`, …
-- **Editing**: auto-closing quotes and braces, `cmd-/` to comment out lines,
-  and no stray `#` when pressing Enter after a directive
+- **Editing**: auto-closing quotes and braces, `cmd-/` to comment out and
+  uncomment lines, directives included, and Enter continues comments but
+  never directives
 
 The grammar is [tree-sitter-m3u](https://github.com/mlinder/tree-sitter-m3u).
 
@@ -69,8 +70,10 @@ files:
   plain text rather than reported as errors, and values aren't checked.
 - Vendor tags such as `#EXT-X-CUE-OUT` also show as plain text, since no
   specification defines them.
-- `cmd-/` does not toggle comments on directives without a value, such as
-  `#EXT-X-ENDLIST`.
+- `cmd-/` works line by line. Zed decides what is commented by the leading
+  `#` alone, which directives have too, so with several lines selected it
+  can comment out only the first directive, or uncomment directives by
+  removing their `#`.
 - M3U has no block comments.
 
 ## Development
@@ -88,17 +91,6 @@ files:
    extension in the Extensions page. Check `zed: open log` if something
    doesn't load.
 
-Gotchas:
-
-- Zed runs queries with a limit of 64 in-progress matches and silently drops
-  matches beyond it. Keep outline patterns to at most one attribute step;
-  `outline.scm` explains why.
-- Zed's snippet parser accepts only numbered tab stops (`${1:x}`) and choices
-  (`${1|a,b|}`), not VS Code variables such as `${CURRENT_YEAR}`. One invalid
-  snippet breaks the whole file without any message in the UI; the log shows
-  "Invalid snippet".
-- Rebuilding a dev extension adds its snippets again without removing the old
-  ones, so renamed or deleted snippets keep appearing until Zed restarts.
 
 ## License
 

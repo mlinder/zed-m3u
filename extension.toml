@@ -11,4 +11,4 @@ snippets = ["snippets/m3u.json"]
 
 [grammars.m3u]
 repository = "https://github.com/mlinder/tree-sitter-m3u"
-rev = "2fd738b2124027ddc7cbfbdf1caafd410be63364"
+rev = "d98f31e4b46e4cf47a1ff21e50bf40b831f11c23"

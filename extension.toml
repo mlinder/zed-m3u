@@ -18,4 +18,4 @@ language_ids = { "M3U" = "m3u" }
 
 [grammars.m3u]
 repository = "https://github.com/mlinder/tree-sitter-m3u"
-rev = "d70785c84949ab719bad9e015a60d10c3ed1251e"
+rev = "3e23f3db7f648af58477ec638c9274616c72ec5d"

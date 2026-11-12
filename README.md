@@ -31,13 +31,26 @@
   rendition groups and URI nested below, so SDR, HDR10, HLG and
   Dolby Vision ladders are easy to tell apart; renditions by type, with
   group and name; I-frame streams; date ranges with class, dates and
-  duration; `#EXTINF` titles, segments, plain entries and IPTV groups
+  duration; `#EXTINF` titles, segments (live ones by their
+  `#EXT-X-PROGRAM-DATE-TIME`), plain entries and IPTV groups
 - **Snippets** for `#EXTM3U`, `#EXTINF` and 22 HLS tags. HLS snippets are
   named `x-` plus the tag name, lowercased: `x-stream-inf`, `x-media`,
   `x-key`, `x-daterange`, `x-part`, …
 - **Editing**: auto-closing quotes and braces, `cmd-/` to comment out and
   uncomment lines, directives included, and Enter continues comments but
   never directives
+- **Language server**
+  ([media-language-server](https://github.com/mlinder/media-language-server),
+  installed from npm on first use):
+  - each segment's date and time as an inlay hint, extrapolated from
+    `#EXT-X-PROGRAM-DATE-TIME`, or its offset into the playlist
+  - hover on a segment for its sequence numbers and the key, init section
+    and bitrate in effect
+  - go to definition from `AUDIO="…"` and other group references, and from
+    `{$var}`
+  - diagnostics after the specification: segments longer than the target
+    duration, missing required attributes and tags, undefined groups and
+    variables, mixed playlist types and more
 
 The grammar is [tree-sitter-m3u](https://github.com/mlinder/tree-sitter-m3u).
 
@@ -45,7 +58,10 @@ The grammar is [tree-sitter-m3u](https://github.com/mlinder/tree-sitter-m3u).
 
 Open the Extensions page (`zed: extensions`), search for **M3U** and click
 **Install**. Files ending in `.m3u` or `.m3u8`, and files without those
-extensions whose first line is `#EXTM3U`, are recognized automatically.
+extensions whose first line is `#EXTM3U` or `#EXTINF:`, are recognized
+automatically. That covers playlists served as
+`application/vnd.apple.mpegurl` (HLS) or `audio/mpegurl` and saved without
+an extension.
 
 ## Settings
 
@@ -64,12 +80,25 @@ files:
 }
 ```
 
+For syntax highlighting only, turn the language server off. It is then never
+downloaded; highlighting, outline and snippets don't need it:
+
+```json
+{
+  "languages": {
+    "M3U": { "language_servers": ["!m3u-language-server", "..."] }
+  }
+}
+```
+
 ## Known limitations
 
-- This is syntax highlighting, not validation: unknown names are shown as
-  plain text rather than reported as errors, and values aren't checked.
-- Vendor tags such as `#EXT-X-CUE-OUT` also show as plain text, since no
-  specification defines them.
+- Unknown attribute names are shown as plain text, not reported, and most
+  attribute values aren't checked.
+- Vendor tags such as `#EXT-X-CUE-OUT` show as plain text, and the language
+  server notes them as unknown, since no specification defines them.
+- Inlay hints are off by default in Zed: turn them on with
+  `"inlay_hints": { "enabled": true }`.
 - `cmd-/` works line by line. Zed decides what is commented by the leading
   `#` alone, which directives have too, so with several lines selected it
   can comment out only the first directive, or uncomment directives by
@@ -77,6 +106,11 @@ files:
 - M3U has no block comments.
 
 ## Development
+
+Building the extension needs Rust installed with `rustup`; Zed adds the
+`wasm32-wasip2` target itself. To run a local
+[media-language-server](https://github.com/mlinder/media-language-server),
+set `lsp.m3u-language-server.binary` as its README describes.
 
 1. Clone this repository and
    [tree-sitter-m3u](https://github.com/mlinder/tree-sitter-m3u).

@@ -66,15 +66,21 @@
 
 ; --- Values ---
 
-; Numbers, including decimal-resolution (1280x720), hexadecimal (0x9c7d…)
-; and byteranges (1024@256000)
+; Numbers, including hexadecimal (0x9c7d…)
 (extinf duration: (duration) @number)
 
 ((attribute value: (unquoted_value) @number)
- (#match? @number "^(-?[0-9]+(\\.[0-9]+)?|[0-9]+x[0-9]+|0[xX][0-9A-Fa-f]+)$"))
+ (#match? @number "^(-?[0-9]+(\\.[0-9]+)?|0[xX][0-9A-Fa-f]+)$"))
 
 ((tag_content (tag_word) @number)
- (#match? @number "^-?[0-9]+(\\.[0-9]+)?(@[0-9]+)?$"))
+ (#match? @number "^(-?[0-9]+(\\.[0-9]+)?|0[xX][0-9A-Fa-f]+)$"))
+
+; Byte ranges (1024@256000) and resolutions (1280x720)
+(byte_range (integer) @number)
+(byte_range "@" @punctuation.delimiter)
+; One capture for the whole value: Zed shapes each highlight span on its
+; own, so a separately coloured x would lose the font's 416×234 ligature
+(resolution) @number
 
 ; Enumerated strings: AUDIO, YES, PQ, AES-128, VOD, …
 ((attribute value: (unquoted_value) @constant @variant)
@@ -90,7 +96,7 @@
 ; Any other unquoted value
 ((attribute value: (unquoted_value) @string @string.special)
  (#not-match? @string
-   "^(-?[0-9]+(\\.[0-9]+)?|[0-9]+x[0-9]+|0[xX][0-9A-Fa-f]+|[A-Z][A-Z0-9-]*|true|false)$"))
+   "^(-?[0-9]+(\\.[0-9]+)?|0[xX][0-9A-Fa-f]+|[A-Z][A-Z0-9-]*|true|false)$"))
 
 ; Timestamps (#EXT-X-PROGRAM-DATE-TIME)
 ((tag_content (tag_word) @string.special)
@@ -105,6 +111,7 @@
 
 ; Media URIs and {$...} template variables
 (uri) @string.special @link_uri
+(escape_sequence) @string.escape
 (variable) @variable @variable.special
 
 ("," @punctuation.delimiter)

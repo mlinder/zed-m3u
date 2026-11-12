@@ -1,8 +1,9 @@
 name = "M3U"
 grammar = "m3u"
 path_suffixes = ["m3u", "m3u8"]
-# Also recognize playlists saved without an extension, e.g. curl output
-first_line_pattern = '^#EXTM3U'
+# Also recognize playlists saved without an extension, e.g. curl output,
+# including plain M3U that starts with an entry instead of the header
+first_line_pattern = '^\x{FEFF}?#EXT(M3U|INF:)'
 
 line_comments = ["# "]
 

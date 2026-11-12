@@ -90,14 +90,31 @@
 
 ; --- Media playlists and plain M3U ---
 
-; Media segment (#EXTINF, its segment tags and URI line).
+; Media segment (its segment tags, #EXTINF and URI line).
 ; Titled (music, IPTV channel) -> "Example Artist - Track"
 (media_segment
   (extinf
     title: (title) @name)) @item
 
+; Live, with a date and time -> "2026-10-01T17:52:12.8Z segment-1141087.mp4".
+; Children match in order, so one pattern per side of the #EXTINF.
+(media_segment
+  program_date_time: (tag
+    (tag_content) @context)
+  (extinf
+    !title)
+  uri: (uri) @name) @item
+
+(media_segment
+  (extinf
+    !title)
+  program_date_time: (tag
+    (tag_content) @context)
+  uri: (uri) @name) @item
+
 ; Untitled -> "6.006 segment-001.ts"
 (media_segment
+  !program_date_time
   (extinf
     duration: (duration) @context
     !title)
@@ -108,6 +125,29 @@
     duration: (duration) @name
     !title)
   !uri) @item
+
+; Where the key or init section changes, or a discontinuity starts. They
+; apply to the following segments too, which the tree can't show, so they
+; are marked where they appear, nested in the segment they open:
+; "#EXT-X-KEY METHOD=AES-128", "#EXT-X-MAP URI="init.mp4"",
+; "#EXT-X-DISCONTINUITY"
+((tag
+   (tag_name) @context
+   (tag_content
+     (attribute name: (tag_word) @_name) @name)) @item
+ (#eq? @context "#EXT-X-KEY")
+ (#eq? @_name "METHOD"))
+
+((tag
+   (tag_name) @context
+   (tag_content
+     (attribute name: (tag_word) @_name) @name)) @item
+ (#eq? @context "#EXT-X-MAP")
+ (#eq? @_name "URI"))
+
+((tag
+   (tag_name) @name) @item
+ (#eq? @name "#EXT-X-DISCONTINUITY"))
 
 ; Plain M3U entry: a URI without #EXTINF
 (playlist

@@ -9,6 +9,13 @@ repository = "https://github.com/mlinder/zed-m3u"
 languages = ["languages/m3u"]
 snippets = ["snippets/m3u.json"]
 
+# media-language-server from npm: segment times, the key and init section in
+# effect, and diagnostics after the HLS specification
+[language_servers.m3u-language-server]
+name = "M3U Language Server"
+languages = ["M3U"]
+language_ids = { "M3U" = "m3u" }
+
 [grammars.m3u]
 repository = "https://github.com/mlinder/tree-sitter-m3u"
-rev = "d98f31e4b46e4cf47a1ff21e50bf40b831f11c23"
+rev = "0fda71c0d47cde7208832c2ae3e850ebb12261a2"
